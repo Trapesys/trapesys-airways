@@ -23,7 +23,7 @@ const Homepage: FC<IHomepageProps> = () => {
           <TopBar />
           <Box mt={'auto'} mb={'auto'}>
             <Typography className={classes.bannerText}>
-              Fly to the Moon.
+              Let's fly to the Moon.
             </Typography>
           </Box>
           <FlightSearch />
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       flexDirection: 'column',
       width: '100%',
-      height: '60%',
+      height: '70%',
       backgroundImage: `url(${backgroundImage})`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',

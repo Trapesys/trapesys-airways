@@ -1,6 +1,8 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { FC } from 'react';
+import CrewSection from '../../atoms/CrewSection/CrewSection';
 import SectionTitle from '../../atoms/SectionTitle/SectionTitle';
+import Offers from '../../molecules/Offers/Offers';
 import PopularDestinations from '../../molecules/PopularDestinations/PopularDestinations';
 import { IInfoSectionProps } from './infoSection.types';
 
@@ -14,8 +16,18 @@ const InfoSection: FC<IInfoSectionProps> = () => {
         <PopularDestinations />
       </Box>
 
-      <Box mt={6}>
+      <Box mt={10}>
         <SectionTitle title={'What We Offer'} />
+        <Box mt={6}>
+          <Offers />
+        </Box>
+      </Box>
+
+      <Box mt={10}>
+        <SectionTitle title={'Meet the crew'} />
+        <Box mt={6}>
+          <CrewSection />
+        </Box>
       </Box>
     </Box>
   );
