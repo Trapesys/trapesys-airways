@@ -45,8 +45,7 @@ const useStyles = makeStyles((theme) => {
       color: theme.palette.secondary.main
     },
     offerDescription: {
-      textAlign: 'center',
-      color: theme.palette.secondary.main
+      textAlign: 'center'
     }
   };
 });
