@@ -2,6 +2,7 @@ import { Box, Container, makeStyles, Typography } from '@material-ui/core';
 import { FC } from 'react';
 import backgroundImage from '../../../shared/assets/images/homepageBanner.jpg';
 import sharedValues from '../../../shared/sharedValues';
+import Footer from '../../atoms/Footer/Footer';
 import FlightSearch from '../../molecules/FlightSearch/FlightSearch';
 import InfoSection from '../../organisms/InfoSection/InfoSection';
 import TopBar from '../../organisms/TopBar/TopBar';
@@ -11,30 +12,45 @@ const Homepage: FC<IHomepageProps> = () => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.bannerWrapper}>
-      <Container
-        maxWidth={'lg'}
-        fixed={true}
-        style={{
-          height: '100%'
-        }}
-      >
-        <Box display={'flex'} height={'100%'} flexDirection={'column'}>
-          <TopBar />
-          <Box mt={'auto'} mb={'auto'}>
-            <Typography className={classes.bannerText}>
-              Let's fly to the Moon.
-            </Typography>
+    <Box width={'100%'} height={'100%'}>
+      <Box className={classes.bannerWrapper}>
+        <Container
+          maxWidth={'lg'}
+          fixed={true}
+          style={{
+            height: '100%'
+          }}
+        >
+          <Box display={'flex'} height={'100%'} flexDirection={'column'}>
+            <TopBar />
+            <Box mt={'auto'} mb={'auto'}>
+              <Typography className={classes.bannerText}>
+                Let's fly to the Moon.
+              </Typography>
+            </Box>
+            <FlightSearch />
           </Box>
-          <FlightSearch />
-        </Box>
-        {
-          // Offset the search box that has a negative bottom margin, and add 50px
-        }
-        <Box mt={`${sharedValues.flightSearchHeight / 2 + 50}px`}>
-          <InfoSection />
-        </Box>
-      </Container>
+          {
+            // Offset the search box that has a negative bottom margin, and add 50px
+          }
+        </Container>
+      </Box>
+
+      <Box display={'flex'} flexDirection={'column'} width={'100%'} mb={15}>
+        <Container
+          maxWidth={'lg'}
+          fixed={true}
+          style={{
+            height: '100%'
+          }}
+        >
+          <Box mt={`${sharedValues.flightSearchHeight / 2 + 50}px`}>
+            <InfoSection />
+          </Box>
+        </Container>
+      </Box>
+
+      <Footer />
     </Box>
   );
 };
