@@ -44,6 +44,17 @@ export const globalStyles = {
       fontWeight: 400,
       fontSize: '1rem'
     },
+    '.sectionDivider': {
+      height: '3px',
+      backgroundColor: theme.palette.secondary.main,
+      borderRadius: '15px'
+    },
+    '.sectionTitle': {
+      fontFamily: 'Poppins',
+      fontWeight: 600,
+      fontSize: theme.typography.pxToRem(24),
+      color: theme.palette.secondary.main
+    },
     '.MuiPickersModal-dialogRoot': {
       fontFamily: 'Poppins'
     },

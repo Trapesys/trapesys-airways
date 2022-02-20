@@ -2,6 +2,7 @@ import { Box, makeStyles } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import { FC, useState } from 'react';
+import sharedValues from '../../../shared/sharedValues';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
 import TripClassSelector from '../../atoms/TripClassSelector/TripClassSelector';
 import { ETripClass } from '../../atoms/TripClassSelector/tripClassSelector.types';
@@ -11,8 +12,6 @@ import TripPlaceRange from '../../atoms/TripPlaceRange/TripPlaceRange';
 import TripTypeSelector from '../../atoms/TripTypeSelector/TripTypeSelector';
 import { ETripType } from '../../atoms/TripTypeSelector/tripTypeSelector.types';
 import { IFlightSearchProps } from './flightSearch.types';
-
-const boxHeight = 230;
 
 const FlightSearch: FC<IFlightSearchProps> = () => {
   const classes = useStyles();
@@ -71,8 +70,8 @@ const useStyles = makeStyles((theme: Theme) => {
       display: 'flex',
       flexDirection: 'column',
       marginTop: 'auto',
-      marginBottom: `-${boxHeight / 2}px`,
-      height: `${boxHeight}px`,
+      marginBottom: `-${sharedValues.flightSearchHeight / 2}px`,
+      height: `${sharedValues.flightSearchHeight}px`,
       width: '100%',
       backgroundColor: theme.palette.custom.darkWhite,
       borderRadius: '20px',
