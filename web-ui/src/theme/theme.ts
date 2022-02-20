@@ -8,6 +8,10 @@ const theme: Theme = createTheme({
       light: '#777',
       contrastText: '#FFF'
     },
+    secondary: {
+      main: '#0D1C52',
+      contrastText: '#FFF'
+    },
     text: {
       primary: '#101010',
       secondary: '#9A9FA5'
@@ -28,7 +32,21 @@ const theme: Theme = createTheme({
       main: '1px 3px 6px 0px rgba(128,142,155,0.1)',
       darker: '1px 3px 6px 0px rgba(128,142,155,0.3)'
     }
+  },
+  typography: {
+    fontFamily: `"Poppins", sans-serif`
   }
 });
+
+theme.overrides = {
+  MuiButton: {
+    root: {
+      textTransform: 'initial'
+    },
+    disabled: {
+      opacity: 0.5
+    }
+  }
+};
 
 export default theme;
