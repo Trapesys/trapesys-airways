@@ -1,6 +1,7 @@
 import { Box, Container, makeStyles } from '@material-ui/core';
 import { FC } from 'react';
 import backgroundImage from '../../../shared/assets/images/homepageBanner.jpg';
+import FlightSearch from '../../molecules/FlightSearch/FlightSearch';
 import TopBar from '../../organisms/TopBar/TopBar';
 import { IHomepageProps } from './homepage.types';
 
@@ -9,8 +10,17 @@ const Homepage: FC<IHomepageProps> = () => {
 
   return (
     <Box className={classes.bannerWrapper}>
-      <Container maxWidth={'lg'} fixed={true}>
-        <TopBar />
+      <Container
+        maxWidth={'lg'}
+        fixed={true}
+        style={{
+          height: '100%'
+        }}
+      >
+        <Box display={'flex'} height={'100%'} flexDirection={'column'}>
+          <TopBar />
+          <FlightSearch />
+        </Box>
       </Container>
     </Box>
   );

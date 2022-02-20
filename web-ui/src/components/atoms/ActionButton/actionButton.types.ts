@@ -8,4 +8,5 @@ export interface IActionButtonProps {
   disabled?: boolean;
 
   square?: boolean;
+  chunky?: boolean;
 }

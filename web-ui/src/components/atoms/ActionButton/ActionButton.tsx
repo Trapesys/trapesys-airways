@@ -11,7 +11,8 @@ const ActionButton: FC<IActionButtonProps> = (props) => {
     startIcon,
     endIcon,
     disabled = false,
-    square = false
+    square = false,
+    chunky = false
   } = props;
 
   const classes = useStyles();
@@ -21,7 +22,8 @@ const ActionButton: FC<IActionButtonProps> = (props) => {
       variant={'contained'}
       onClick={onClick}
       className={clsx('actionButtonBase', {
-        [classes.actionButtonSquare]: square
+        [classes.actionButtonSquare]: square,
+        [classes.actionButtonChunky]: chunky
       })}
       color={'secondary'}
       startIcon={startIcon}
@@ -37,6 +39,11 @@ const useStyles = makeStyles((theme) => {
   return {
     actionButtonSquare: {
       borderRadius: '10px !important'
+    },
+    actionButtonChunky: {
+      padding: '15px 20px',
+      fontSize: theme.typography.pxToRem(16),
+      fontWeight: 400
     }
   };
 });

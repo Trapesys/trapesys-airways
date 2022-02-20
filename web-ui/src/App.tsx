@@ -1,4 +1,6 @@
+import MomentUtils from '@date-io/moment';
 import { CssBaseline } from '@material-ui/core';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { withStyles } from '@material-ui/styles';
 import React from 'react';
 import './App.css';
@@ -8,10 +10,12 @@ import ThemeProvider from './theme/ThemeProvider';
 
 function App() {
   return (
-    <ThemeProvider>
-      <CssBaseline />
-      <Homepage />
-    </ThemeProvider>
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+      <ThemeProvider>
+        <CssBaseline />
+        <Homepage />
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
   );
 }
 

@@ -38,6 +38,30 @@ export const globalStyles = {
       padding: '8px 16px',
       borderRadius: '20px',
       boxShadow: 'none'
+    },
+    '.flightSearchDropdown': {
+      fontFamily: 'Poppins',
+      fontWeight: 400,
+      fontSize: '1rem'
+    },
+    '.MuiPickersModal-dialogRoot': {
+      fontFamily: 'Poppins'
+    },
+    '.MuiPickersToolbarText-toolbarTxt': {
+      fontFamily: 'Poppins'
+    },
+    '.MuiPickersToolbar-toolbar': {
+      backgroundColor: theme.palette.custom.navyBlue
+    },
+    '.MuiPickerDTTabs-tabs': {
+      backgroundColor: theme.palette.custom.navyBlue
+    },
+    '.MuiPickersDay-daySelected': {
+      backgroundColor: theme.palette.custom.navyBlue,
+
+      '&:hover': {
+        backgroundColor: theme.palette.custom.navyBlue
+      }
     }
   }
 };

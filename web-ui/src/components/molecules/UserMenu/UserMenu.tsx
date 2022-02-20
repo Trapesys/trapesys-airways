@@ -18,6 +18,7 @@ import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import { FC, Fragment, useRef, useState } from 'react';
 import { ReactComponent as MyBookings } from '../../../shared/assets/icons/airplane_ticket_black_24dp.svg';
 import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_black_24dp.svg';
+import theme from '../../../theme/theme';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
 import { IUserMenuProps } from './userMenu.types';
 
@@ -96,7 +97,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
                     style={{
                       background: 'white',
                       borderRadius: '5px',
-                      boxShadow: 'none'
+                      boxShadow: theme.palette.boxShadows.darker
                     }}
                   >
                     <MenuItem>
