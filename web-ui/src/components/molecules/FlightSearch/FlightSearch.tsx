@@ -1,7 +1,9 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-import { FC, useState } from 'react';
+import { FC, useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import SearchContext from '../../../context/SearchContext';
 import sharedValues from '../../../shared/sharedValues';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
 import TripClassSelector from '../../atoms/TripClassSelector/TripClassSelector';
@@ -16,6 +18,8 @@ import { IFlightSearchProps } from './flightSearch.types';
 const FlightSearch: FC<IFlightSearchProps> = () => {
   const classes = useStyles();
 
+  const { setFlightSearchParams } = useContext(SearchContext);
+
   const [tripType, setTripType] = useState<ETripType>(ETripType.ONE_WAY);
   const [personCount, setPersonCount] = useState<number>(1);
   const [tripClass, setTripClass] = useState<ETripClass>(ETripClass.ECONOMY);
@@ -25,6 +29,38 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
 
   const [departDate, setDepartDate] = useState<Date>(new Date());
   const [returnDate, setReturnDate] = useState<Date>(new Date());
+
+  const navigate = useNavigate();
+
+  const handleFlightSearch = () => {
+    // Sanity checks
+    if (origin === '' || destination === '') {
+      // TODO open snackbar
+      return;
+    }
+
+    setFlightSearchParams({
+      tripClass,
+      tripType,
+      departDate,
+      returnDate,
+      personCount,
+
+      // TODO change these types in the state handler here
+      origin: {
+        id: '123',
+        name: origin,
+        airport: 'JAG'
+      },
+      destination: {
+        id: '123',
+        name: destination,
+        airport: 'SCH'
+      }
+    });
+
+    navigate('/flights');
+  };
 
   return (
     <Box className={classes.searchBoxWrapper}>
@@ -57,6 +93,7 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
             text={'Search'}
             endIcon={<SearchRoundedIcon />}
             chunky={true}
+            onClick={() => handleFlightSearch()}
           />
         </Box>
       </Box>
