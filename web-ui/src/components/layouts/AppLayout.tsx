@@ -1,14 +1,14 @@
 import { Box, Container, makeStyles, Typography } from '@material-ui/core';
 import { FC } from 'react';
-import backgroundImage from '../../../shared/assets/images/homepageBanner.jpg';
-import sharedValues from '../../../shared/sharedValues';
-import Footer from '../../atoms/Footer/Footer';
-import FlightSearch from '../../molecules/FlightSearch/FlightSearch';
-import InfoSection from '../../organisms/InfoSection/InfoSection';
-import TopBar from '../../organisms/TopBar/TopBar';
-import { IHomepageProps } from './homepage.types';
+import { Outlet } from 'react-router-dom';
+import backgroundImage from '../../shared/assets/images/homepageBanner.jpg';
+import sharedValues from '../../shared/sharedValues';
+import Footer from '../atoms/Footer/Footer';
+import FlightSearch from '../molecules/FlightSearch/FlightSearch';
+import TopBar from '../organisms/TopBar/TopBar';
+import { IAppLayoutProps } from './appLayout.types';
 
-const Homepage: FC<IHomepageProps> = () => {
+const AppLayout: FC<IAppLayoutProps> = (props) => {
   const classes = useStyles();
 
   return (
@@ -30,9 +30,6 @@ const Homepage: FC<IHomepageProps> = () => {
             </Box>
             <FlightSearch />
           </Box>
-          {
-            // Offset the search box that has a negative bottom margin, and add 50px
-          }
         </Container>
       </Box>
 
@@ -44,8 +41,11 @@ const Homepage: FC<IHomepageProps> = () => {
             height: '100%'
           }}
         >
+          {
+            // Offset the search box that has a negative bottom margin, and add 50px
+          }
           <Box mt={`${sharedValues.flightSearchHeight / 2 + 50}px`}>
-            <InfoSection />
+            <Outlet />
           </Box>
         </Container>
       </Box>
@@ -75,4 +75,4 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default Homepage;
+export default AppLayout;

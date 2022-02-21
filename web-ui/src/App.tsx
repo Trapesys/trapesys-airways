@@ -4,7 +4,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { withStyles } from '@material-ui/styles';
 import React from 'react';
 import './App.css';
-import Homepage from './components/pages/Homepage/Homepage';
+import AppRouter from './router/AppRouter';
 import { globalStyles } from './shared/styles/global.styles';
 import ThemeProvider from './theme/ThemeProvider';
 
@@ -13,7 +13,7 @@ function App() {
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <ThemeProvider>
         <CssBaseline />
-        <Homepage />
+        <AppRouter />
       </ThemeProvider>
     </MuiPickersUtilsProvider>
   );
