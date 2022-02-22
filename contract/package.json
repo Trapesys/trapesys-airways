@@ -16,6 +16,7 @@
     "approve-token": "hardhat run scripts/approve-token.ts --network edge",
     "transfer-token": "hardhat run scripts/transfer-token.ts --network edge",
     "balance-of-token": "hardhat run scripts/balance-of-token.ts --network edge",
+    "withdraw-tokens": "hardhat run scripts/withdraw-tokens.ts --network edge",
     "test": "hardhat test",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile"

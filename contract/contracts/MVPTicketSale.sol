@@ -64,8 +64,17 @@ contract MVPTicketSale is AccessControl {
         _;
     }
 
-    modifier flightExisted(uint256 flightId) {
+    modifier flightExists(uint256 flightId) {
         require(flightId < _flights.length, "flight doesn't exist");
+        _;
+    }
+
+    modifier ticketExists(uint256 ticketId) {
+        IMVPFlightTicket ticketContract = IMVPFlightTicket(_ticketContract);
+        require(
+            ticketContract.ownerOf(ticketId) != address(0x0),
+            "ticket doesn't exist"
+        );
         _;
     }
 
@@ -76,7 +85,7 @@ contract MVPTicketSale is AccessControl {
     function flightById(uint256 flightId)
         external
         view
-        flightExisted(flightId)
+        flightExists(flightId)
         returns (Flight memory)
     {
         return _flights[flightId];
@@ -85,14 +94,9 @@ contract MVPTicketSale is AccessControl {
     function flightByTicketId(uint256 ticketId)
         external
         view
+        ticketExists(ticketId)
         returns (Flight memory)
     {
-        IMVPFlightTicket ticketContract = IMVPFlightTicket(_ticketContract);
-        require(
-            ticketContract.ownerOf(ticketId) != address(0x0),
-            "ticket doesn't exist"
-        );
-
         return _flights[_ticketIdToFlightId[ticketId]];
     }
 
@@ -107,7 +111,7 @@ contract MVPTicketSale is AccessControl {
     function numAvailableSeats(uint256 flightId)
         external
         view
-        flightExisted(flightId)
+        flightExists(flightId)
         returns (uint16)
     {
         Flight memory flight = _flights[flightId];
@@ -170,7 +174,7 @@ contract MVPTicketSale is AccessControl {
         emit AddedFlight(flightId);
     }
 
-    function buyTicket(uint256 flightId) external flightExisted(flightId) {
+    function buyTicket(uint256 flightId) external flightExists(flightId) {
         // validation
         Flight storage flight = _flights[flightId];
         require(
