@@ -1,5 +1,6 @@
 import { Box, makeStyles } from '@material-ui/core';
-import { FC } from 'react';
+import { FC, useContext, useEffect } from 'react';
+import SearchContext from '../../../context/SearchContext';
 import CrewSection from '../../atoms/CrewSection/CrewSection';
 import SectionTitle from '../../atoms/SectionTitle/SectionTitle';
 import Offers from '../../molecules/Offers/Offers';
@@ -8,6 +9,13 @@ import { IInfoSectionProps } from './infoSection.types';
 
 const InfoSection: FC<IInfoSectionProps> = () => {
   const classes = useStyles();
+
+  const { setFlightSearchParams } = useContext(SearchContext);
+
+  useEffect(() => {
+    // On component load, reset the flight search params
+    setFlightSearchParams(null);
+  }, []);
 
   return (
     <Box className={classes.infoSectionWrapper}>

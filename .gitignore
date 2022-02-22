@@ -3,3 +3,6 @@ artifacts/
 types/
 cache/
 .env
+
+.idea
+.DS_Store

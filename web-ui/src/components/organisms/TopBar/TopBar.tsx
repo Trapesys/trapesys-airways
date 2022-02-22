@@ -1,5 +1,6 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../../../shared/assets/icons/Logo.svg';
 import UserMenu from '../../molecules/UserMenu/UserMenu';
 import { ITopBarProps } from './topBar.types';
@@ -8,7 +9,10 @@ const TopBar: FC<ITopBarProps> = () => {
   const classes = useStyles();
   return (
     <Box className={classes.topBarWrapper}>
-      <Logo className={classes.logo} />
+      <Link to={'/'}>
+        <Logo className={classes.logo} />
+      </Link>
+
       <UserMenu />
     </Box>
   );
