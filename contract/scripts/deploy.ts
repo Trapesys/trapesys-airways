@@ -1,15 +1,58 @@
 import { ethers } from "hardhat";
+import { MVPToken, MVPFlightTicket, MVPTicketSale } from "../types";
+
+const INITIAL_TOKEN_SUPPLY = ethers.BigNumber.from(10).pow(6);
 
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying contract from the account:", deployer.address);
-  console.log("Account balance:", (await deployer.getBalance()).toString());
+  const deployerBalance = (await deployer.getBalance()).toString();
+  console.log(
+    `Deploying contracts by the account: ${deployer.address} (balance: ${deployerBalance})`
+  );
 
-  const contractFactory = await ethers.getContractFactory("TestERC20");
-  const contract = await contractFactory.deploy();
+  // TokenContract
+  const tokenContractFactory = await ethers.getContractFactory("MVPToken");
+  const tokenContract = (await tokenContractFactory.deploy(
+    deployer.address,
+    INITIAL_TOKEN_SUPPLY
+  )) as MVPToken;
+  await tokenContract.deployed();
 
-  console.log("Contract address:", contract.address);
+  // TicketContract
+  const ticketContractFactory = await ethers.getContractFactory(
+    "MVPFlightTicket"
+  );
+  const ticketContract = (await ticketContractFactory.deploy(
+    deployer.address
+  )) as MVPFlightTicket;
+  await ticketContract.deployed();
+
+  await Promise.all([tokenContract.deployed(), ticketContract.deployed()]);
+  console.log(`MVPToken: ${tokenContract.address}`);
+  console.log(`MVPFlightTicket: ${ticketContract.address}`);
+
+  // TicketSale
+  const ticketSaleContractFactory = await ethers.getContractFactory(
+    "MVPTicketSale"
+  );
+  const ticketSaleContract = (await ticketSaleContractFactory.deploy(
+    deployer.address,
+    tokenContract.address,
+    ticketContract.address
+  )) as MVPTicketSale;
+  await ticketSaleContract.deployed();
+  console.log(`MVPTicketSale: ${ticketSaleContract.address}`);
+
+  // Grant role
+  const tx = await ticketContract.grantRole(
+    await ticketContract.MINTER_ROLE(),
+    ticketSaleContract.address
+  );
+  await tx.wait();
+  console.log(
+    "Granted MVPTicketSale permission to mint new ticket in MVPFlightTicket contract"
+  );
 }
 
 main()

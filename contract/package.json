@@ -7,6 +7,15 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "deploy": "hardhat run scripts/deploy.ts --network edge",
+    "add-flight": "hardhat run scripts/add-flight.ts --network edge",
+    "get-flight": "hardhat run scripts/get-flight.ts --network edge",
+    "get-flights": "hardhat run scripts/get-flights.ts --network edge",
+    "get-flight-by-ticket-id": "hardhat run scripts/get-flight-by-ticket-id.ts --network edge",
+    "buy-ticket": "hardhat run scripts/buy-ticket.ts --network edge",
+    "get-ticket-ids": "hardhat run scripts/get-ticket-ids.ts --network edge",
+    "approve-token": "hardhat run scripts/approve-token.ts --network edge",
+    "transfer-token": "hardhat run scripts/transfer-token.ts --network edge",
+    "balance-of-token": "hardhat run scripts/balance-of-token.ts --network edge",
     "test": "hardhat test",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile"
