@@ -15,7 +15,10 @@ import { Theme } from '@material-ui/core/styles';
 import KeyboardArrowDownRoundedIcon from '@material-ui/icons/KeyboardArrowDownRounded';
 import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounded';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
-import { FC, Fragment, useRef, useState } from 'react';
+import { FC, Fragment, useContext, useEffect, useRef, useState } from 'react';
+import Web3 from 'web3';
+import Config from '../../../config';
+import Web3Context from '../../../context/Web3Context';
 import { ReactComponent as MyBookings } from '../../../shared/assets/icons/airplane_ticket_black_24dp.svg';
 import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_black_24dp.svg';
 import theme from '../../../theme/theme';
@@ -24,8 +27,47 @@ import BookingsModal from '../BookingsModal/BookingsModal';
 import { IUserMenuProps } from './userMenu.types';
 
 const UserMenu: FC<IUserMenuProps> = () => {
-  // TODO: Temporary state management until we connect Metamask
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  interface IAccountInfo {
+    account: string;
+  }
+
+  const { web3Context, setWeb3Context } = useContext(Web3Context);
+  const [accountInfo, setAccountInfo] = useState<IAccountInfo | null>(null);
+
+  const handleWeb3Disconnect = async () => {
+    setAccountInfo(null);
+    setWeb3Context(null);
+  };
+
+  const handleWeb3Connect = async () => {
+    const web3 = new Web3(Web3.givenProvider);
+    const accounts = await web3.eth.requestAccounts();
+
+    return {
+      web3Context: web3,
+      account: accounts[0]
+    };
+  };
+
+  const handleLogin = () => {
+    handleWeb3Connect()
+      .then(async (data) => {
+        await handleNetworkAddition(data.web3Context);
+
+        setAccountInfo({
+          account: data.account
+        });
+
+        setWeb3Context(data.web3Context);
+      })
+      .catch((err) => {
+        // TODO show in snackbar
+
+        console.log(err);
+      });
+
+    setOpen(false);
+  };
 
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -49,20 +91,76 @@ const UserMenu: FC<IUserMenuProps> = () => {
 
   const [bookingsModalOpen, setBookingsModalOpen] = useState<boolean>(false);
 
-  const renderUserInfo = () => {
+  useEffect(() => {
+    if (web3Context) {
+      const handleSignInCheck = async () => {
+        await web3Context.eth.net.isListening();
+
+        const accounts = await web3Context.eth.requestAccounts();
+
+        setAccountInfo({
+          account: accounts[0]
+        });
+      };
+
+      handleSignInCheck()
+        .then(() => {
+          // TODO add snackbar
+        })
+        .catch((err) => {
+          // TODO add snackbar
+          console.log(err);
+        });
+    }
+  }, []);
+
+  const handleNetworkAddition = async (web3Context: Web3) => {
+    try {
+      // @ts-ignore
+      await web3Context.currentProvider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: Config.POLYGON_EDGE_CHAIN_ID }]
+      });
+    } catch (error: any) {
+      if (error.code === 4902) {
+        // @ts-ignore
+        await web3Context.currentProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: Config.POLYGON_EDGE_CHAIN_ID,
+              chainName: 'MVP Airways',
+              rpcUrls: [Config.POLYGON_EDGE_API],
+              nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+              }
+            }
+          ]
+        });
+      }
+    }
+  };
+
+  const renderUserInfo = (info: IAccountInfo) => {
     return (
       <Fragment>
-        <Box display={'flex'} mr={1}>
-          {
-            // TODO grab the address from the injected provider
-          }
-          <Typography>0x2bc2a4a...</Typography>
+        <Box
+          display={'flex'}
+          mr={1}
+          style={{
+            overflow: 'hidden',
+            width: '120px'
+          }}
+        >
+          <Typography className={'truncate'}>{info.account}</Typography>
         </Box>
       </Fragment>
     );
   };
 
-  if (isLoggedIn) {
+  if (accountInfo) {
     return (
       <div ref={anchorRef}>
         <BookingsModal
@@ -76,7 +174,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
           className={'actionButtonBase'}
         >
           <Box className={classes.userMenuWrapper}>
-            {renderUserInfo()}
+            {renderUserInfo(accountInfo)}
             {open ? (
               <KeyboardArrowUpRoundedIcon />
             ) : (
@@ -132,9 +230,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
                     </MenuItem>
                     <MenuItem
                       className={classes.userMenuItem}
-                      onClick={() => {
-                        // TODO implement logout
-                      }}
+                      onClick={() => handleWeb3Disconnect()}
                     >
                       <Box display={'flex'}>
                         <Logout />
@@ -157,6 +253,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
         text={'Log in'}
         square={true}
         startIcon={<PersonRoundedIcon />}
+        onClick={() => handleLogin()}
       />
     </Box>
   );
