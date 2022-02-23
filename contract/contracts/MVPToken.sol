@@ -27,6 +27,6 @@ contract MVPToken is ERC20, AccessControl, IMVPToken {
     }
 
     function burnFrom(address account, uint256 amount) external override {
-        burn(account, amount);
+        _burn(account, amount);
     }
 }
