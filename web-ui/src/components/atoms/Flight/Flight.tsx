@@ -100,7 +100,8 @@ const useStyles = makeStyles((theme: Theme) => {
       width: '100%',
       height: '230px',
       backgroundColor: theme.palette.custom.darkWhite,
-      borderRadius: '15px'
+      borderRadius: '15px',
+      boxShadow: theme.palette.boxShadows.main
     },
     flightInfoWrapper: {
       display: 'flex'
