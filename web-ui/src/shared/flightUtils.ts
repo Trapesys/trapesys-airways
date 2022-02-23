@@ -17,6 +17,8 @@ export interface IFlightInfo {
   tripClass: ETripClass;
 
   availableSeats: number;
+
+  price: number;
 }
 
 class FlightUtils {
@@ -41,6 +43,12 @@ class FlightUtils {
       // Get a random value between [1h, 10h]
       const randomFlightDuration = FlightUtils.getRandomNumber(60, 600);
 
+      // Get a random ticket price
+      const ticketPrice =
+        params.tripClass === ETripClass.ECONOMY
+          ? FlightUtils.getRandomNumber(100, 300)
+          : FlightUtils.getRandomNumber(500, 1000);
+
       // Get a random flight takeoff time
       const randomTakeoffTime = new Date(params.departDate);
       randomTakeoffTime.setHours(
@@ -63,7 +71,9 @@ class FlightUtils {
         arrivalDateTime: arrivalTime,
 
         tripClass: params.tripClass,
-        availableSeats
+        availableSeats,
+
+        price: ticketPrice
       });
     }
 

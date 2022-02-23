@@ -1,11 +1,14 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import AirlineSeatReclineNormalRoundedIcon from '@material-ui/icons/AirlineSeatReclineNormalRounded';
+import clsx from 'clsx';
 import { FC } from 'react';
 import { ReactComponent as FlightPath } from '../../../shared/assets/icons/flightPath.svg';
 import FlightUtils from '../../../shared/flightUtils';
 import theme from '../../../theme/theme';
+import ActionButton from '../ActionButton/ActionButton';
 import PlaceInfo from '../PlaceInfo/PlaceInfo';
+import { ETripClass } from '../TripClassSelector/tripClassSelector.types';
 import { IFlightProps } from './flight.types';
 
 const Flight: FC<IFlightProps> = (props) => {
@@ -15,10 +18,15 @@ const Flight: FC<IFlightProps> = (props) => {
 
   return (
     <Box className={classes.flightWrapper}>
-      <div className={classes.economyTag} />
+      <div
+        className={clsx({
+          [classes.economyTag]: flightInfo.tripClass === ETripClass.ECONOMY,
+          [classes.businessTag]: flightInfo.tripClass === ETripClass.BUSINESS
+        })}
+      />
       <Box
         display={'flex'}
-        width={'100%'}
+        width={'70%'}
         height={'100%'}
         alignItems={'center'}
         ml={6}
@@ -89,6 +97,27 @@ const Flight: FC<IFlightProps> = (props) => {
           </Box>
         </Box>
       </Box>
+
+      <div className={classes.ticketDots} />
+
+      <Box
+        display={'flex'}
+        flexDirection={'column'}
+        width={'30%'}
+        height={'100%'}
+        alignItems={'center'}
+        justifyContent={'center'}
+      >
+        <Typography className={classes.tripClass}>
+          {flightInfo.tripClass}
+        </Typography>
+        <Typography
+          className={classes.tripCost}
+        >{`${flightInfo.price} MVPT`}</Typography>
+        <Box mt={1}>
+          <ActionButton text={'Book now'} chunky={true} />
+        </Box>
+      </Box>
     </Box>
   );
 };
@@ -135,6 +164,20 @@ const useStyles = makeStyles((theme: Theme) => {
     seats: {
       fontWeight: 500,
       fontSize: theme.typography.pxToRem(18)
+    },
+    ticketDots: {
+      border: '4px solid #EBEBEB',
+      borderStyle: 'none none none dotted'
+    },
+    tripClass: {
+      fontWeight: 500,
+      color: theme.palette.secondary.main,
+      fontSize: theme.typography.pxToRem(18)
+    },
+    tripCost: {
+      fontWeight: 500,
+      fontSize: theme.typography.pxToRem(14),
+      color: '#A4A4A4'
     }
   };
 });
