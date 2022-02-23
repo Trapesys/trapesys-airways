@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import SearchContext from '../../../context/SearchContext';
 import FlightUtils, { IFlightInfo } from '../../../shared/flightUtils';
 import Flight from '../../atoms/Flight/Flight';
+import Pagination from '../../atoms/Pagination/Pagination';
+import usePagination from '../../atoms/Pagination/pagination.hook';
 import SectionTitle from '../../atoms/SectionTitle/SectionTitle';
 import { IFlightsProps } from './flights.types';
 
@@ -15,6 +17,19 @@ const Flights: FC<IFlightsProps> = () => {
 
   const navigate = useNavigate();
 
+  const numFlightsPerPage = 30;
+
+  const { page, count, setCount, limit, handlePageChange } = usePagination({
+    limit: 5
+  });
+
+  const [allFlights, setAllFlights] = useState<IFlightInfo[]>([]);
+  const [flightsToShow, setFlightsToShow] = useState<IFlightInfo[]>([]);
+
+  const paginateFlights = (flights: IFlightInfo[]) => {
+    return flights.slice((page - 1) * limit, page * limit);
+  };
+
   useEffect(() => {
     if (!flightSearchParams) {
       // Nothing to display if the params are not set
@@ -22,20 +37,29 @@ const Flights: FC<IFlightsProps> = () => {
     }
   }, [flightSearchParams]);
 
-  const [foundFlights, setFoundFlights] = useState<IFlightInfo[]>([]);
+  useEffect(() => {
+    setFlightsToShow(paginateFlights(allFlights));
+  }, [page, count]);
 
   useEffect(() => {
     if (flightSearchParams) {
-      setFoundFlights(
-        FlightUtils.generateRandomFlightData(flightSearchParams, 30)
+      const randomFlights = FlightUtils.generateRandomFlightData(
+        flightSearchParams,
+        numFlightsPerPage
       );
+
+      setAllFlights(randomFlights);
+
+      setFlightsToShow(paginateFlights(randomFlights));
+
+      setCount(numFlightsPerPage);
     }
   }, [flightSearchParams]);
 
   return (
     <Box className={classes.flightsWrapper}>
       <SectionTitle title={'Search results'} />
-      {foundFlights.map((foundFlight: IFlightInfo) => {
+      {flightsToShow.map((foundFlight: IFlightInfo) => {
         return (
           <Flight
             key={`flight-${foundFlight.departDateTime.getTime()}`}
@@ -43,6 +67,20 @@ const Flights: FC<IFlightsProps> = () => {
           />
         );
       })}
+      <Box
+        display={'flex'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        width={'100%'}
+        mt={4}
+      >
+        <Pagination
+          count={count}
+          limit={limit}
+          page={page}
+          onPageChange={handlePageChange}
+        />
+      </Box>
     </Box>
   );
 };

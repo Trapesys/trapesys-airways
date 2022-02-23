@@ -34,9 +34,6 @@ const TripDateRange: FC<ITripDateRangeProps> = (props) => {
       onClick={onClick}
       className={classes.inputField}
       InputProps={{
-        classes: {
-          root: classes.input
-        },
         endAdornment: (
           <Calendar
             style={{
@@ -121,9 +118,6 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     inputField: {
       width: '200px'
-    },
-    input: {
-      borderRadius: '10px'
     },
     rootClass: {
       fontFamily: 'Poppins'

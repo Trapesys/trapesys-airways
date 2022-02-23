@@ -1,4 +1,5 @@
 import { ETripClass } from '../components/atoms/TripClassSelector/tripClassSelector.types';
+import { IAirportInfo } from '../components/atoms/TripPlaceRange/tripPlaceRange.types';
 import { ETripType } from '../components/atoms/TripTypeSelector/tripTypeSelector.types';
 
 export interface IFlightSearchParams {
@@ -8,12 +9,6 @@ export interface IFlightSearchParams {
   returnDate: Date;
   personCount: number;
 
-  origin: IPlaceInformation;
-  destination: IPlaceInformation;
-}
-
-export interface IPlaceInformation {
-  id: string;
-  name: string;
-  airport: string;
+  origin: IAirportInfo;
+  destination: IAirportInfo;
 }

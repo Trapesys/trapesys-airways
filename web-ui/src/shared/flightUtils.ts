@@ -1,13 +1,12 @@
 import moment from 'moment';
 import { ETripClass } from '../components/atoms/TripClassSelector/tripClassSelector.types';
-import {
-  IFlightSearchParams,
-  IPlaceInformation
-} from '../context/searchContext.types';
+import { IAirportInfo } from '../components/atoms/TripPlaceRange/tripPlaceRange.types';
+import { IFlightSearchParams } from '../context/searchContext.types';
+import countryCodes from "./assets/data/countriesAlfaTwo.json"
 
 export interface IFlightInfo {
-  origin: IPlaceInformation;
-  destination: IPlaceInformation;
+  origin: IAirportInfo;
+  destination: IAirportInfo;
 
   duration: number; // Duration in minutes
 
@@ -17,11 +16,23 @@ export interface IFlightInfo {
   tripClass: ETripClass;
 
   availableSeats: number;
+
+  price: number;
 }
 
 class FlightUtils {
   public static getRandomNumber(min: number, max: number) {
     return Math.round(Math.random() * (max - min)) + min;
+  }
+
+  public static getCountryCode(country: string): string {
+    for (let i = 0; i < countryCodes.length; i++) {
+      if (countryCodes[i].name === country) {
+        return countryCodes[i].code
+      }
+    }
+
+    return "UN" // Unknown
   }
 
   public static generateRandomFlightData(
@@ -40,6 +51,12 @@ class FlightUtils {
 
       // Get a random value between [1h, 10h]
       const randomFlightDuration = FlightUtils.getRandomNumber(60, 600);
+
+      // Get a random ticket price
+      const ticketPrice =
+        params.tripClass === ETripClass.ECONOMY
+          ? FlightUtils.getRandomNumber(100, 300)
+          : FlightUtils.getRandomNumber(500, 1000);
 
       // Get a random flight takeoff time
       const randomTakeoffTime = new Date(params.departDate);
@@ -63,7 +80,9 @@ class FlightUtils {
         arrivalDateTime: arrivalTime,
 
         tripClass: params.tripClass,
-        availableSeats
+        availableSeats,
+
+        price: ticketPrice
       });
     }
 

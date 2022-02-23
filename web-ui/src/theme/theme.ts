@@ -46,6 +46,11 @@ theme.overrides = {
     disabled: {
       opacity: 0.5
     }
+  },
+  MuiInputBase: {
+    root: {
+      borderRadius: '10px !important'
+    }
   }
 };
 
