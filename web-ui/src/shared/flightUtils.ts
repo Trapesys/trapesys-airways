@@ -1,13 +1,12 @@
 import moment from 'moment';
 import { ETripClass } from '../components/atoms/TripClassSelector/tripClassSelector.types';
-import {
-  IFlightSearchParams,
-  IPlaceInformation
-} from '../context/searchContext.types';
+import { IAirportInfo } from '../components/atoms/TripPlaceRange/tripPlaceRange.types';
+import { IFlightSearchParams } from '../context/searchContext.types';
+import countryCodes from "./assets/data/countriesAlfaTwo.json"
 
 export interface IFlightInfo {
-  origin: IPlaceInformation;
-  destination: IPlaceInformation;
+  origin: IAirportInfo;
+  destination: IAirportInfo;
 
   duration: number; // Duration in minutes
 
@@ -24,6 +23,16 @@ export interface IFlightInfo {
 class FlightUtils {
   public static getRandomNumber(min: number, max: number) {
     return Math.round(Math.random() * (max - min)) + min;
+  }
+
+  public static getCountryCode(country: string): string {
+    for (let i = 0; i < countryCodes.length; i++) {
+      if (countryCodes[i].name === country) {
+        return countryCodes[i].code
+      }
+    }
+
+    return "UN" // Unknown
   }
 
   public static generateRandomFlightData(

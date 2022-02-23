@@ -11,6 +11,7 @@ import { ETripClass } from '../../atoms/TripClassSelector/tripClassSelector.type
 import TripDateRange from '../../atoms/TripDateRange/TripDateRange';
 import TripPersonSelector from '../../atoms/TripPersonSelector/TripPersonSelector';
 import TripPlaceRange from '../../atoms/TripPlaceRange/TripPlaceRange';
+import { IAirportInfo } from '../../atoms/TripPlaceRange/tripPlaceRange.types';
 import TripTypeSelector from '../../atoms/TripTypeSelector/TripTypeSelector';
 import { ETripType } from '../../atoms/TripTypeSelector/tripTypeSelector.types';
 import { IFlightSearchProps } from './flightSearch.types';
@@ -24,8 +25,8 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
   const [personCount, setPersonCount] = useState<number>(1);
   const [tripClass, setTripClass] = useState<ETripClass>(ETripClass.ECONOMY);
 
-  const [origin, setOrigin] = useState<string>('');
-  const [destination, setDestination] = useState<string>('');
+  const [origin, setOrigin] = useState<IAirportInfo | null>(null);
+  const [destination, setDestination] = useState<IAirportInfo | null>(null);
 
   const [departDate, setDepartDate] = useState<Date>(new Date());
   const [returnDate, setReturnDate] = useState<Date>(new Date());
@@ -34,7 +35,12 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
 
   const handleFlightSearch = () => {
     // Sanity checks
-    if (origin === '' || destination === '') {
+    if (!origin || !destination) {
+      // TODO open snackbar
+      return;
+    }
+
+    if (origin.objectID === destination.objectID) {
       // TODO open snackbar
       return;
     }
@@ -46,17 +52,8 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
       returnDate,
       personCount,
 
-      // TODO change these types in the state handler here
-      origin: {
-        id: '123',
-        name: origin,
-        airport: 'JAG'
-      },
-      destination: {
-        id: '123',
-        name: destination,
-        airport: 'SCH'
-      }
+      origin,
+      destination
     });
 
     navigate('/flights');

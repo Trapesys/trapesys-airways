@@ -35,8 +35,10 @@ const Flight: FC<IFlightProps> = (props) => {
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Typography className={classes.infoLabel}>From</Typography>
             <PlaceInfo
-              place={'Jagodina, RS'}
-              airport={'JGD'}
+              place={`${flightInfo.origin.city}, ${FlightUtils.getCountryCode(
+                flightInfo.origin.country
+              )}`}
+              airport={flightInfo.origin.iataCode}
               dateTime={flightInfo.departDateTime}
             />
           </Box>
@@ -63,9 +65,11 @@ const Flight: FC<IFlightProps> = (props) => {
           <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Typography className={classes.infoLabel}>To</Typography>
             <PlaceInfo
-              place={'Jagodina, RS'}
-              airport={'JGD'}
-              dateTime={flightInfo.departDateTime}
+              place={`${
+                flightInfo.destination.city
+              }, ${FlightUtils.getCountryCode(flightInfo.destination.country)}`}
+              airport={flightInfo.destination.iataCode}
+              dateTime={flightInfo.arrivalDateTime}
             />
           </Box>
 
