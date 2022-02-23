@@ -20,6 +20,7 @@ import { ReactComponent as MyBookings } from '../../../shared/assets/icons/airpl
 import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_black_24dp.svg';
 import theme from '../../../theme/theme';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
+import BookingsModal from '../BookingsModal/BookingsModal';
 import { IUserMenuProps } from './userMenu.types';
 
 const UserMenu: FC<IUserMenuProps> = () => {
@@ -46,6 +47,8 @@ const UserMenu: FC<IUserMenuProps> = () => {
     setOpen(false);
   };
 
+  const [bookingsModalOpen, setBookingsModalOpen] = useState<boolean>(false);
+
   const renderUserInfo = () => {
     return (
       <Fragment>
@@ -62,6 +65,10 @@ const UserMenu: FC<IUserMenuProps> = () => {
   if (isLoggedIn) {
     return (
       <div ref={anchorRef}>
+        <BookingsModal
+          open={bookingsModalOpen}
+          setOpen={setBookingsModalOpen}
+        />
         <Button
           onClick={handleToggle}
           color={'secondary'}
@@ -115,7 +122,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
                       className={classes.userMenuItem}
                       onClick={() => {
                         setOpen(false);
-                        // TODO implement modal opens
+                        setBookingsModalOpen(true);
                       }}
                     >
                       <Box display={'flex'}>
