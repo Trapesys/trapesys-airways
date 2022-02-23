@@ -1,9 +1,10 @@
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./IMVPToken.sol";
 
-contract MVPToken is ERC20, IMVPToken {
+contract MVPToken is ERC20, AccessControl, IMVPToken {
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
