@@ -41,7 +41,7 @@ const Flights: FC<IFlightsProps> = () => {
     return flights.slice((page - 1) * limit, page * limit);
   };
 
-  const getFlighs = async () => {
+  const getFlights = async () => {
     if (web3Context && web3Account) {
       let contract = new web3Context.eth.Contract(
         MVPTicketSale.abi as AbiItem[],
@@ -75,7 +75,7 @@ const Flights: FC<IFlightsProps> = () => {
 
   useEffect(() => {
     if (flightSearchParams) {
-      getFlighs()
+      getFlights()
         .then((flights: IContractFlight[]) => {
           const filteredFlights = FlightUtils.convertContractFlights(
             FlightUtils.filterContractFlights(flights, flightSearchParams)
@@ -102,7 +102,9 @@ const Flights: FC<IFlightsProps> = () => {
       {flightsToShow.map((foundFlight: IFlightInfo) => {
         return (
           <Flight
-            key={`flight-${foundFlight.departDateTime.getTime()}`}
+            key={`flight-${foundFlight.departDateTime.getTime()}-${
+              foundFlight.flightNumber
+            }`}
             flightInfo={foundFlight}
           />
         );

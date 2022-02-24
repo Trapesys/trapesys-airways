@@ -23,6 +23,7 @@ contract MVPTicketSale is AccessControl {
     }
 
     struct Flight {
+        uint256 flightID;
         FlightSaleStatus saleStatus;
         string flightNumber;
         FlightClass class;
@@ -159,6 +160,7 @@ contract MVPTicketSale is AccessControl {
         uint256 flightId = _flights.length;
         _flights.push(
             Flight({
+                flightID: flightId,
                 saleStatus: FlightSaleStatus.Open,
                 flightNumber: flightNumber,
                 class: flightClass,

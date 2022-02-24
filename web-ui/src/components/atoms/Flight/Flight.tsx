@@ -2,10 +2,15 @@ import { Box, makeStyles, Typography } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import AirlineSeatReclineNormalRoundedIcon from '@material-ui/icons/AirlineSeatReclineNormalRounded';
 import clsx from 'clsx';
-import { FC } from 'react';
+import { FC, useContext, useState } from 'react';
+import { AbiItem } from 'web3-utils';
+import Config from '../../../config';
+import Web3Context from '../../../context/Web3Context';
+import MVPTicketSale from '../../../contract/MVPTicketSale.json';
 import { ReactComponent as FlightPath } from '../../../shared/assets/icons/flightPath.svg';
 import FlightUtils from '../../../shared/flightUtils';
 import theme from '../../../theme/theme';
+import useSnackbar from '../../molecules/Snackbar/useSnackbar.hook';
 import ActionButton from '../ActionButton/ActionButton';
 import PlaceInfo from '../PlaceInfo/PlaceInfo';
 import { ETripClass } from '../TripClassSelector/tripClassSelector.types';
@@ -15,6 +20,43 @@ const Flight: FC<IFlightProps> = (props) => {
   const { flightInfo } = props;
 
   const classes = useStyles();
+
+  const { openSnackbar } = useSnackbar();
+
+  const [buyInProgress, setBuyInProgress] = useState<boolean>(false);
+
+  const { web3Context, web3Account } = useContext(Web3Context);
+
+  const handleTicketBuy = async () => {
+    if (web3Context && web3Account) {
+      let contract = new web3Context.eth.Contract(
+        MVPTicketSale.abi as AbiItem[],
+        Config.TICKET_SALE_ADDRESS,
+        {
+          from: web3Account
+        }
+      );
+
+      return await contract.methods.buyTicket(flightInfo.flightID).send();
+    }
+  };
+
+  const buyTicket = () => {
+    setBuyInProgress(true);
+
+    handleTicketBuy()
+      .then(() => {
+        openSnackbar('Successfully booked ticket!', 'success');
+
+        setBuyInProgress(false);
+      })
+      .catch((err) => {
+        console.log(err);
+
+        openSnackbar('Unable to book ticket', 'error');
+        setBuyInProgress(false);
+      });
+  };
 
   return (
     <Box className={classes.flightWrapper}>
@@ -119,7 +161,12 @@ const Flight: FC<IFlightProps> = (props) => {
           className={classes.tripCost}
         >{`${flightInfo.price} MVPT`}</Typography>
         <Box mt={1}>
-          <ActionButton text={'Book now'} chunky={true} />
+          <ActionButton
+            disabled={buyInProgress}
+            text={'Book now'}
+            chunky={true}
+            onClick={() => buyTicket()}
+          />
         </Box>
       </Box>
     </Box>

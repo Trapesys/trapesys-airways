@@ -6,6 +6,8 @@ import airportInfo from './assets/data/airports.json';
 import countryCodes from './assets/data/countriesAlfaTwo.json';
 
 export interface IFlightInfo {
+  flightID: number;
+
   origin: IAirportInfo;
   destination: IAirportInfo;
 
@@ -37,9 +39,10 @@ export enum EContractFlightClass {
 
 // Flights as they are represented on the Smart Contract
 export interface IContractFlight {
+  flightID: number;
   saleStatus: EContractFlightSaleStatus;
   flightNumber: string;
-  flightClass: EContractFlightClass;
+  class: number;
   availableSeats: number;
   departureCode: string;
   departureTime: number;
@@ -63,61 +66,6 @@ class FlightUtils {
     return 'UN'; // Unknown
   }
 
-  public static generateRandomFlightData(
-    params: IFlightSearchParams,
-    count: number
-  ): IFlightInfo[] {
-    if (count < 1) {
-      return [];
-    }
-
-    let resultFlights: IFlightInfo[] = [];
-
-    for (let i = 0; i < count; i++) {
-      // Generate a random available seat numbers
-      const availableSeats = FlightUtils.getRandomNumber(5, 100);
-
-      // Get a random value between [1h, 10h]
-      const randomFlightDuration = FlightUtils.getRandomNumber(60, 600);
-
-      // Get a random ticket price
-      const ticketPrice =
-        params.tripClass === ETripClass.ECONOMY
-          ? FlightUtils.getRandomNumber(100, 300)
-          : FlightUtils.getRandomNumber(500, 1000);
-
-      // Get a random flight takeoff time
-      const randomTakeoffTime = new Date(params.departDate);
-      randomTakeoffTime.setHours(
-        FlightUtils.getRandomNumber(0, 23),
-        FlightUtils.getRandomNumber(0, 59)
-      );
-
-      // Find the arrival time
-      const arrivalTime = moment(randomTakeoffTime)
-        .add(randomFlightDuration, 'minutes')
-        .toDate();
-
-      resultFlights.push({
-        origin: params.origin,
-        destination: params.destination,
-
-        duration: randomFlightDuration,
-
-        departDateTime: randomTakeoffTime,
-        arrivalDateTime: arrivalTime,
-
-        tripClass: params.tripClass,
-        availableSeats,
-
-        price: ticketPrice,
-        flightNumber: `MVP-${FlightUtils.getRandomNumber(0, 50)}`
-      });
-    }
-
-    return resultFlights;
-  }
-
   public static formatHoursAndMinutes(minutes: number): string {
     let h: string | number = Math.floor(minutes / 60);
     let m: string | number = minutes % 60;
@@ -127,15 +75,12 @@ class FlightUtils {
     return h + ':' + m;
   }
 
-  public static convertFromContractClass(
-    contractClass: EContractFlightClass
-  ): ETripClass {
-    switch (contractClass) {
-      case EContractFlightClass.BUSINESS:
-        return ETripClass.BUSINESS;
-      default:
-        return ETripClass.ECONOMY;
+  public static convertFromContractClass(contractClass: number): ETripClass {
+    if (contractClass > 0) {
+      return ETripClass.BUSINESS;
     }
+
+    return ETripClass.ECONOMY;
   }
 
   public static filterContractFlights(
@@ -151,11 +96,12 @@ class FlightUtils {
         contractFlightDate.getMonth() === searchParams.departDate.getMonth() &&
         contractFlightDate.getFullYear() ===
           searchParams.departDate.getFullYear();
+
       return (
         contractFlight.departureCode === searchParams.origin.iataCode &&
         contractFlight.arrivalCode === searchParams.destination.iataCode &&
         contractFlight.availableSeats >= searchParams.personCount &&
-        this.convertFromContractClass(contractFlight.flightClass) ===
+        this.convertFromContractClass(contractFlight.class) ===
           searchParams.tripClass &&
         areSameDay
       );
@@ -207,19 +153,13 @@ class FlightUtils {
       const arrivalTime = moment(contractFlight.arrivalTime * 1000);
 
       const duration = arrivalTime.diff(departTime, 'minutes');
-
-      let tripClass: ETripClass;
-      switch (contractFlight.flightClass) {
-        case EContractFlightClass.BUSINESS: {
-          tripClass = ETripClass.BUSINESS;
-          break;
-        }
-        default: {
-          tripClass = ETripClass.ECONOMY;
-        }
-      }
+      const tripClass: ETripClass = this.convertFromContractClass(
+        contractFlight.class
+      );
 
       convertedFlights.push({
+        flightID: +contractFlight.flightID,
+
         origin: originInfo,
         destination: destinationInfo,
         departDateTime: departTime.toDate(),

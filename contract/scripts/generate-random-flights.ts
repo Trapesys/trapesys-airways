@@ -1,4 +1,3 @@
-import {ContractTransaction} from 'ethers';
 import {ethers} from 'hardhat';
 import FlightGenerator, {EContractFlightClass} from '../helper/flightGenerator';
 import {MVPTicketSale} from '../types';
@@ -17,7 +16,7 @@ async function main() {
     )) as MVPTicketSale
   ).connect(account);
 
-  const numFlights = 50;
+  const numFlights = 20; // Per class
   const departureCode = 'BEG';
   const arrivalCode = 'AMS';
   const departDate = new Date();
@@ -31,7 +30,6 @@ async function main() {
   }, numFlights);
 
   const combinedFlights = economyFlights.concat(businessFlights);
-  let transactions: Promise<ContractTransaction>[] = [];
 
   for (let i = 0; i < combinedFlights.length; i++) {
     const combinedFlight = combinedFlights[i];

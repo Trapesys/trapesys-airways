@@ -90,7 +90,7 @@ const BookingsModal: FC<IBookingsModalProps> = (props) => {
 
       setCount(convertedFlights.length);
     });
-  }, []);
+  }, [open]);
 
   return (
     <Modal
