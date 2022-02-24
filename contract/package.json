@@ -17,6 +17,7 @@
     "transfer-token": "hardhat run scripts/transfer-token.ts --network edge",
     "balance-of-token": "hardhat run scripts/balance-of-token.ts --network edge",
     "withdraw-tokens": "hardhat run scripts/withdraw-tokens.ts --network edge",
+    "generate-random-flights": "hardhat run scripts/generate-random-flights.ts --network edge",
     "test": "hardhat test",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile"
@@ -35,6 +36,7 @@
     "dotenv": "^10.0.0",
     "ethers": "^5.4.5",
     "hardhat": "^2.6.1",
+    "moment": "^2.29.1",
     "web3": "^1.5.2"
   },
   "devDependencies": {

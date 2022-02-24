@@ -25,7 +25,7 @@ const PlaceInfo: FC<IPlaceInfoProps> = (props) => {
         />
         <Box ml={2}>
           <Typography className={classes.time}>
-            {moment(props.dateTime).format('HH:MM')}
+            {moment(props.dateTime).format('HH:mm')}
           </Typography>
         </Box>
       </Box>

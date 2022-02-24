@@ -177,7 +177,7 @@ const BookingsModal: FC<IBookingsModalProps> = (props) => {
                                 fill: theme.palette.secondary.main
                               }}
                             />
-                            <Typography>MV-123</Typography>
+                            <Typography>{booking.flightNumber}</Typography>
                           </Box>
                           <Box display={'flex'} alignItems={'center'}>
                             <AirlineSeatReclineNormalRoundedIcon
@@ -187,7 +187,9 @@ const BookingsModal: FC<IBookingsModalProps> = (props) => {
                                 height: 'auto'
                               }}
                             />
-                            <Typography>A13</Typography>
+                            <Typography>
+                              {FlightUtils.getRandomSeat()}
+                            </Typography>
                           </Box>
                         </Box>
                         <Box mr={4}>

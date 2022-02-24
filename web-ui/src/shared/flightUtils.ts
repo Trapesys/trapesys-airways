@@ -19,6 +19,8 @@ export interface IFlightInfo {
   availableSeats: number;
 
   price: number;
+
+  flightNumber: string;
 }
 
 export enum EContractFlightSaleStatus {
@@ -108,7 +110,8 @@ class FlightUtils {
         tripClass: params.tripClass,
         availableSeats,
 
-        price: ticketPrice
+        price: ticketPrice,
+        flightNumber: `MVP-${FlightUtils.getRandomNumber(0, 50)}`
       });
     }
 
@@ -140,13 +143,14 @@ class FlightUtils {
     searchParams: IFlightSearchParams
   ): IContractFlight[] {
     return contractFlights.filter((contractFlight: IContractFlight) => {
-      const contractFlightDate = moment(contractFlight.departureTime).toDate();
+      const contractFlightDate = moment(
+        contractFlight.departureTime * 1000
+      ).toDate();
       const areSameDay =
-        contractFlightDate === searchParams.departDate &&
+        contractFlightDate.getDay() === searchParams.departDate.getDay() &&
         contractFlightDate.getMonth() === searchParams.departDate.getMonth() &&
         contractFlightDate.getFullYear() ===
           searchParams.departDate.getFullYear();
-
       return (
         contractFlight.departureCode === searchParams.origin.iataCode &&
         contractFlight.arrivalCode === searchParams.destination.iataCode &&
@@ -166,6 +170,13 @@ class FlightUtils {
     });
 
     return airportMap;
+  }
+
+  public static getRandomSeat(): string {
+    const seatLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    const seatNumber = this.getRandomNumber(1, 50);
+
+    return `${seatLetter}${seatNumber}`;
   }
 
   public static convertContractFlights(
@@ -192,10 +203,10 @@ class FlightUtils {
       const destinationInfo = destinationInfoRaw;
 
       // Convert the times from unix to regular dates
-      const departTime = moment(contractFlight.departureTime);
-      const arrivalTime = moment(contractFlight.arrivalTime);
+      const departTime = moment(contractFlight.departureTime * 1000);
+      const arrivalTime = moment(contractFlight.arrivalTime * 1000);
 
-      const duration = moment.duration(arrivalTime.diff(departTime));
+      const duration = arrivalTime.diff(departTime, 'minutes');
 
       let tripClass: ETripClass;
       switch (contractFlight.flightClass) {
@@ -213,9 +224,10 @@ class FlightUtils {
         destination: destinationInfo,
         departDateTime: departTime.toDate(),
         arrivalDateTime: arrivalTime.toDate(),
-        duration: duration.minutes(),
+        duration: duration,
         availableSeats: contractFlight.availableSeats,
         price: contractFlight.price,
+        flightNumber: contractFlight.flightNumber,
         tripClass
       });
     });
