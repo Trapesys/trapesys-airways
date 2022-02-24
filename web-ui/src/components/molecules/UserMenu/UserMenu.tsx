@@ -17,8 +17,10 @@ import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounde
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import { FC, Fragment, useContext, useEffect, useRef, useState } from 'react';
 import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
 import Config from '../../../config';
 import Web3Context from '../../../context/Web3Context';
+import MVPToken from '../../../contract/IMVPToken.json';
 import { ReactComponent as MyBookings } from '../../../shared/assets/icons/airplane_ticket_black_24dp.svg';
 import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_black_24dp.svg';
 import theme from '../../../theme/theme';
@@ -71,6 +73,12 @@ const UserMenu: FC<IUserMenuProps> = () => {
   const classes = useStyles();
 
   const handleToggle = () => {
+    if (!open) {
+      getTokenBalance().then((balance) => {
+        setTokenBalance(balance);
+      });
+    }
+
     setOpen((prevOpen) => !prevOpen);
   };
 
@@ -137,6 +145,30 @@ const UserMenu: FC<IUserMenuProps> = () => {
         });
       }
     }
+  };
+
+  const [tokenBalance, setTokenBalance] = useState<number>(0);
+
+  useEffect(() => {
+    getTokenBalance().then((balance) => {
+      setTokenBalance(balance);
+    });
+  }, [web3Context, web3Account]);
+
+  const getTokenBalance = async () => {
+    if (web3Context && web3Account) {
+      let contract = new web3Context.eth.Contract(
+        MVPToken.abi as AbiItem[],
+        Config.MVPT_ADDRESS,
+        {
+          from: web3Account
+        }
+      );
+
+      return await contract.methods.balanceOf(web3Account).call();
+    }
+
+    return 0;
   };
 
   const renderUserInfo = (accountAddress: string) => {
@@ -207,7 +239,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
                           MVPT Balance
                         </Typography>
                         <Typography className={classes.balance}>
-                          {`${0} MVPT`}
+                          {`${tokenBalance} MVPT`}
                         </Typography>
                       </Box>
                     </MenuItem>

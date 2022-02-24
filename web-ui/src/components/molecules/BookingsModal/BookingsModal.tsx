@@ -13,8 +13,15 @@ import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import FlightRoundedIcon from '@material-ui/icons/FlightRounded';
 import SwapHorizRoundedIcon from '@material-ui/icons/SwapHorizRounded';
 import clsx from 'clsx';
-import { FC, useEffect, useState } from 'react';
-import FlightUtils, { IFlightInfo } from '../../../shared/flightUtils';
+import { FC, useContext, useEffect, useState } from 'react';
+import { AbiItem } from 'web3-utils';
+import Config from '../../../config';
+import Web3Context from '../../../context/Web3Context';
+import MVPTicketSale from '../../../contract/MVPTicketSale.json';
+import FlightUtils, {
+  IContractFlight,
+  IFlightInfo
+} from '../../../shared/flightUtils';
 import theme from '../../../theme/theme';
 import NoData from '../../atoms/NoData/NoData';
 import Pagination from '../../atoms/Pagination/Pagination';
@@ -22,7 +29,6 @@ import usePagination from '../../atoms/Pagination/pagination.hook';
 import PlaceInfo from '../../atoms/PlaceInfo/PlaceInfo';
 import SectionTitle from '../../atoms/SectionTitle/SectionTitle';
 import { ETripClass } from '../../atoms/TripClassSelector/tripClassSelector.types';
-import { ETripType } from '../../atoms/TripTypeSelector/tripTypeSelector.types';
 import { IBookingsModalProps } from './bookingsModal.types';
 
 const BookingsModal: FC<IBookingsModalProps> = (props) => {
@@ -45,48 +51,45 @@ const BookingsModal: FC<IBookingsModalProps> = (props) => {
     setBookingsToShow(paginateFlights(allBookings));
   }, [page, count]);
 
-  useEffect(() => {
-    const randomFlights = FlightUtils.generateRandomFlightData(
-      {
-        tripType: ETripType.ONE_WAY,
-        tripClass: ETripClass.BUSINESS,
-        departDate: new Date(),
-        returnDate: new Date(),
-        personCount: 1,
+  const { web3Context, web3Account } = useContext(Web3Context);
 
-        origin: {
-          name: 'Jagodina Airport',
-          city: 'Jagodina',
-          country: 'Serbia',
-          iataCode: 'RS',
-          geoLocation: {
-            lat: 12,
-            lng: 12
-          },
-          linksCount: 12,
-          objectID: 'OBJ123'
-        },
-        destination: {
-          name: 'Jagodina Airport',
-          city: 'Jagodina',
-          country: 'Serbia',
-          iataCode: 'RS',
-          geoLocation: {
-            lat: 12,
-            lng: 12
-          },
-          linksCount: 12,
-          objectID: 'OBJ123'
+  const fetchAllBookings = async () => {
+    if (web3Context && web3Account) {
+      let contract = new web3Context.eth.Contract(
+        MVPTicketSale.abi as AbiItem[],
+        Config.TICKET_SALE_ADDRESS,
+        {
+          from: web3Account
         }
-      },
-      5
-    );
+      );
 
-    setAllBookings(randomFlights);
+      const ticketIDs: number[] = await contract.methods
+        .accountTicketIds(web3Account)
+        .call();
 
-    setBookingsToShow(paginateFlights(randomFlights));
+      let foundBookings: IContractFlight[] = [];
+      for (let i = 0; i < ticketIDs.length; i++) {
+        foundBookings.push(
+          await contract.methods.flightByTicketId(ticketIDs[i]).call()
+        );
+      }
 
-    setCount(randomFlights.length);
+      return foundBookings;
+    }
+
+    return [];
+  };
+
+  useEffect(() => {
+    fetchAllBookings().then((foundBookings: IContractFlight[]) => {
+      const convertedFlights =
+        FlightUtils.convertContractFlights(foundBookings);
+      setAllBookings(convertedFlights);
+
+      setBookingsToShow(paginateFlights(convertedFlights));
+
+      setCount(convertedFlights.length);
+    });
   }, []);
 
   return (

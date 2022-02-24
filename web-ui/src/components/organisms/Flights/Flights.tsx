@@ -42,7 +42,7 @@ const Flights: FC<IFlightsProps> = () => {
   };
 
   const getFlighs = async () => {
-    if (web3Context != null && web3Account) {
+    if (web3Context && web3Account) {
       let contract = new web3Context.eth.Contract(
         MVPTicketSale.abi as AbiItem[],
         Config.TICKET_SALE_ADDRESS,
