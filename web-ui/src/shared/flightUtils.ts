@@ -2,7 +2,8 @@ import moment from 'moment';
 import { ETripClass } from '../components/atoms/TripClassSelector/tripClassSelector.types';
 import { IAirportInfo } from '../components/atoms/TripPlaceRange/tripPlaceRange.types';
 import { IFlightSearchParams } from '../context/searchContext.types';
-import countryCodes from "./assets/data/countriesAlfaTwo.json"
+import airportInfo from './assets/data/airports.json';
+import countryCodes from './assets/data/countriesAlfaTwo.json';
 
 export interface IFlightInfo {
   origin: IAirportInfo;
@@ -20,6 +21,31 @@ export interface IFlightInfo {
   price: number;
 }
 
+export enum EContractFlightSaleStatus {
+  NOT_READY,
+  OPEN,
+  CLOSE
+}
+
+export enum EContractFlightClass {
+  ECONOMY,
+  BUSINESS,
+  FIRST
+}
+
+// Flights as they are represented on the Smart Contract
+export interface IContractFlight {
+  saleStatus: EContractFlightSaleStatus;
+  flightNumber: string;
+  flightClass: EContractFlightClass;
+  availableSeats: number;
+  departureCode: string;
+  departureTime: number;
+  arrivalCode: string;
+  arrivalTime: number;
+  price: number;
+}
+
 class FlightUtils {
   public static getRandomNumber(min: number, max: number) {
     return Math.round(Math.random() * (max - min)) + min;
@@ -28,11 +54,11 @@ class FlightUtils {
   public static getCountryCode(country: string): string {
     for (let i = 0; i < countryCodes.length; i++) {
       if (countryCodes[i].name === country) {
-        return countryCodes[i].code
+        return countryCodes[i].code;
       }
     }
 
-    return "UN" // Unknown
+    return 'UN'; // Unknown
   }
 
   public static generateRandomFlightData(
@@ -96,6 +122,105 @@ class FlightUtils {
     h = h < 10 ? '0' + h : h;
     m = m < 10 ? '0' + m : m;
     return h + ':' + m;
+  }
+
+  public static convertFromContractClass(
+    contractClass: EContractFlightClass
+  ): ETripClass {
+    switch (contractClass) {
+      case EContractFlightClass.BUSINESS:
+        return ETripClass.BUSINESS;
+      default:
+        return ETripClass.ECONOMY;
+    }
+  }
+
+  public static filterContractFlights(
+    contractFlights: IContractFlight[],
+    searchParams: IFlightSearchParams
+  ): IContractFlight[] {
+    return contractFlights.filter((contractFlight: IContractFlight) => {
+      const contractFlightDate = moment(contractFlight.departureTime).toDate();
+      const areSameDay =
+        contractFlightDate === searchParams.departDate &&
+        contractFlightDate.getMonth() === searchParams.departDate.getMonth() &&
+        contractFlightDate.getFullYear() ===
+          searchParams.departDate.getFullYear();
+
+      return (
+        contractFlight.departureCode === searchParams.origin.iataCode &&
+        contractFlight.arrivalCode === searchParams.destination.iataCode &&
+        contractFlight.availableSeats >= searchParams.personCount &&
+        this.convertFromContractClass(contractFlight.flightClass) ===
+          searchParams.tripClass &&
+        areSameDay
+      );
+    });
+  }
+
+  public static getAirportToPlaceMap(): Map<string, IAirportInfo> {
+    let airportMap: Map<string, IAirportInfo> = new Map<string, IAirportInfo>();
+
+    airportInfo.forEach((item: IAirportInfo) => {
+      airportMap.set(item.iataCode, item);
+    });
+
+    return airportMap;
+  }
+
+  public static convertContractFlights(
+    contractFlights: IContractFlight[]
+  ): IFlightInfo[] {
+    let convertedFlights: IFlightInfo[] = [];
+
+    const airportMap = this.getAirportToPlaceMap();
+    contractFlights.forEach((contractFlight: IContractFlight) => {
+      // Grab the origin info
+      const originInfoRaw = airportMap.get(contractFlight.departureCode);
+      if (!originInfoRaw) {
+        throw new Error('Invalid origin info code');
+      }
+
+      const originInfo = originInfoRaw;
+
+      // Grab the destination info
+      const destinationInfoRaw = airportMap.get(contractFlight.arrivalCode);
+      if (!destinationInfoRaw) {
+        throw new Error('Invalid destination info code');
+      }
+
+      const destinationInfo = destinationInfoRaw;
+
+      // Convert the times from unix to regular dates
+      const departTime = moment(contractFlight.departureTime);
+      const arrivalTime = moment(contractFlight.arrivalTime);
+
+      const duration = moment.duration(arrivalTime.diff(departTime));
+
+      let tripClass: ETripClass;
+      switch (contractFlight.flightClass) {
+        case EContractFlightClass.BUSINESS: {
+          tripClass = ETripClass.BUSINESS;
+          break;
+        }
+        default: {
+          tripClass = ETripClass.ECONOMY;
+        }
+      }
+
+      convertedFlights.push({
+        origin: originInfo,
+        destination: destinationInfo,
+        departDateTime: departTime.toDate(),
+        arrivalDateTime: arrivalTime.toDate(),
+        duration: duration.minutes(),
+        availableSeats: contractFlight.availableSeats,
+        price: contractFlight.price,
+        tripClass
+      });
+    });
+
+    return convertedFlights;
   }
 }
 

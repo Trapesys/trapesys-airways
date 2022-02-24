@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
 import Web3 from 'web3';
 import './App.css';
+import { SnackbarProvider } from './components/molecules/Snackbar/snackbar.context';
 import SearchContext, { ISearchContext } from './context/SearchContext';
 import { IFlightSearchParams } from './context/searchContext.types';
 import Web3Context, { IWeb3Context } from './context/Web3Context';
@@ -17,6 +18,7 @@ function App() {
     useState<IFlightSearchParams | null>(null);
 
   const [web3, setWeb3] = useState<Web3 | null>(null);
+  const [web3Account, setWeb3Account] = useState<string | null>(null);
 
   const searchContextValue: ISearchContext = {
     flightSearchParams,
@@ -25,17 +27,22 @@ function App() {
 
   const web3ContextValue: IWeb3Context = {
     web3Context: web3,
-    setWeb3Context: setWeb3
+    setWeb3Context: setWeb3,
+
+    web3Account,
+    setWeb3Account
   };
 
   return (
     <Web3Context.Provider value={web3ContextValue}>
       <SearchContext.Provider value={searchContextValue}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
-          <ThemeProvider>
-            <CssBaseline />
-            <AppRouter />
-          </ThemeProvider>
+          <SnackbarProvider>
+            <ThemeProvider>
+              <CssBaseline />
+              <AppRouter />
+            </ThemeProvider>
+          </SnackbarProvider>
         </MuiPickersUtilsProvider>
       </SearchContext.Provider>
     </Web3Context.Provider>

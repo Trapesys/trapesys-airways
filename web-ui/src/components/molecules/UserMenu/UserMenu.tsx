@@ -24,18 +24,15 @@ import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_bl
 import theme from '../../../theme/theme';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
 import BookingsModal from '../BookingsModal/BookingsModal';
+import useSnackbar from '../Snackbar/useSnackbar.hook';
 import { IUserMenuProps } from './userMenu.types';
 
 const UserMenu: FC<IUserMenuProps> = () => {
-  interface IAccountInfo {
-    account: string;
-  }
-
-  const { web3Context, setWeb3Context } = useContext(Web3Context);
-  const [accountInfo, setAccountInfo] = useState<IAccountInfo | null>(null);
+  const { web3Context, setWeb3Context, web3Account, setWeb3Account } =
+    useContext(Web3Context);
 
   const handleWeb3Disconnect = async () => {
-    setAccountInfo(null);
+    setWeb3Account(null);
     setWeb3Context(null);
   };
 
@@ -54,14 +51,13 @@ const UserMenu: FC<IUserMenuProps> = () => {
       .then(async (data) => {
         await handleNetworkAddition(data.web3Context);
 
-        setAccountInfo({
-          account: data.account
-        });
-
+        setWeb3Account(data.account);
         setWeb3Context(data.web3Context);
+
+        openSnackbar('Successfully signed in!', 'success');
       })
       .catch((err) => {
-        // TODO show in snackbar
+        openSnackbar('Unable to connect to web3 provider', 'error');
 
         console.log(err);
       });
@@ -91,6 +87,8 @@ const UserMenu: FC<IUserMenuProps> = () => {
 
   const [bookingsModalOpen, setBookingsModalOpen] = useState<boolean>(false);
 
+  const { openSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (web3Context) {
       const handleSignInCheck = async () => {
@@ -98,17 +96,15 @@ const UserMenu: FC<IUserMenuProps> = () => {
 
         const accounts = await web3Context.eth.requestAccounts();
 
-        setAccountInfo({
-          account: accounts[0]
-        });
+        setWeb3Account(accounts[0]);
       };
 
       handleSignInCheck()
         .then(() => {
-          // TODO add snackbar
+          openSnackbar('Successfully signed in!', 'success');
         })
         .catch((err) => {
-          // TODO add snackbar
+          openSnackbar('Unable to sign in', 'error');
           console.log(err);
         });
     }
@@ -143,7 +139,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
     }
   };
 
-  const renderUserInfo = (info: IAccountInfo) => {
+  const renderUserInfo = (accountAddress: string) => {
     return (
       <Fragment>
         <Box
@@ -154,13 +150,13 @@ const UserMenu: FC<IUserMenuProps> = () => {
             width: '120px'
           }}
         >
-          <Typography className={'truncate'}>{info.account}</Typography>
+          <Typography className={'truncate'}>{accountAddress}</Typography>
         </Box>
       </Fragment>
     );
   };
 
-  if (accountInfo) {
+  if (web3Account) {
     return (
       <div ref={anchorRef}>
         <BookingsModal
@@ -174,7 +170,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
           className={'actionButtonBase'}
         >
           <Box className={classes.userMenuWrapper}>
-            {renderUserInfo(accountInfo)}
+            {renderUserInfo(web3Account)}
             {open ? (
               <KeyboardArrowUpRoundedIcon />
             ) : (

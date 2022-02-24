@@ -14,6 +14,7 @@ import TripPlaceRange from '../../atoms/TripPlaceRange/TripPlaceRange';
 import { IAirportInfo } from '../../atoms/TripPlaceRange/tripPlaceRange.types';
 import TripTypeSelector from '../../atoms/TripTypeSelector/TripTypeSelector';
 import { ETripType } from '../../atoms/TripTypeSelector/tripTypeSelector.types';
+import useSnackbar from '../Snackbar/useSnackbar.hook';
 import { IFlightSearchProps } from './flightSearch.types';
 
 const FlightSearch: FC<IFlightSearchProps> = () => {
@@ -32,16 +33,17 @@ const FlightSearch: FC<IFlightSearchProps> = () => {
   const [returnDate, setReturnDate] = useState<Date>(new Date());
 
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
 
   const handleFlightSearch = () => {
     // Sanity checks
     if (!origin || !destination) {
-      // TODO open snackbar
+      openSnackbar('Origin or destination not provided', 'error');
       return;
     }
 
     if (origin.objectID === destination.objectID) {
-      // TODO open snackbar
+      openSnackbar('Invalid origin and destination', 'error');
       return;
     }
 

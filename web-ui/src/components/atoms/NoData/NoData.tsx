@@ -1,15 +1,15 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { FC } from 'react';
 import { ReactComponent as Clipboard } from '../../../shared/assets/icons/undraw_no_data_re_kwbl.svg';
-import { INoBookingsProps } from './noBookings.types';
+import { INoDataProps } from './noData.types';
 
-const NoBookings: FC<INoBookingsProps> = () => {
+const NoData: FC<INoDataProps> = (props) => {
   const classes = useStyles();
   return (
     <Box className={classes.emptyWrapper}>
       <Clipboard className={classes.img} />
       <Box mt={2}>
-        <Typography>No bookings found</Typography>
+        <Typography>{props.text}</Typography>
       </Box>
     </Box>
   );
@@ -30,4 +30,4 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-export default NoBookings;
+export default NoData;

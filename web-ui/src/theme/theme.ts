@@ -51,6 +51,12 @@ theme.overrides = {
     root: {
       borderRadius: '10px !important'
     }
+  },
+  MuiTypography: {
+    root: {
+      fontFamily: 'Poppins !important',
+      letterSpacing: '0 !important'
+    }
   }
 };
 

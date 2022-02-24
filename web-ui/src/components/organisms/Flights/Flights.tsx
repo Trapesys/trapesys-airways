@@ -2,12 +2,21 @@ import { Box, makeStyles } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
 import { FC, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AbiItem } from 'web3-utils';
+import Config from '../../../config';
 import SearchContext from '../../../context/SearchContext';
-import FlightUtils, { IFlightInfo } from '../../../shared/flightUtils';
+import Web3Context from '../../../context/Web3Context';
+import MVPTicketSale from '../../../contract/MVPTicketSale.json';
+import FlightUtils, {
+  IContractFlight,
+  IFlightInfo
+} from '../../../shared/flightUtils';
 import Flight from '../../atoms/Flight/Flight';
+import NoData from '../../atoms/NoData/NoData';
 import Pagination from '../../atoms/Pagination/Pagination';
 import usePagination from '../../atoms/Pagination/pagination.hook';
 import SectionTitle from '../../atoms/SectionTitle/SectionTitle';
+import useSnackbar from '../../molecules/Snackbar/useSnackbar.hook';
 import { IFlightsProps } from './flights.types';
 
 const Flights: FC<IFlightsProps> = () => {
@@ -15,9 +24,9 @@ const Flights: FC<IFlightsProps> = () => {
 
   const classes = useStyles();
 
-  const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
 
-  const numFlightsPerPage = 30;
+  const navigate = useNavigate();
 
   const { page, count, setCount, limit, handlePageChange } = usePagination({
     limit: 5
@@ -26,8 +35,24 @@ const Flights: FC<IFlightsProps> = () => {
   const [allFlights, setAllFlights] = useState<IFlightInfo[]>([]);
   const [flightsToShow, setFlightsToShow] = useState<IFlightInfo[]>([]);
 
+  const { web3Account, web3Context } = useContext(Web3Context);
+
   const paginateFlights = (flights: IFlightInfo[]) => {
     return flights.slice((page - 1) * limit, page * limit);
+  };
+
+  const getFlighs = async () => {
+    if (web3Context != null && web3Account) {
+      let contract = new web3Context.eth.Contract(
+        MVPTicketSale.abi as AbiItem[],
+        Config.TICKET_SALE_ADDRESS,
+        {
+          from: web3Account
+        }
+      );
+
+      return await contract.methods.flights().call();
+    }
   };
 
   useEffect(() => {
@@ -38,21 +63,36 @@ const Flights: FC<IFlightsProps> = () => {
   }, [flightSearchParams]);
 
   useEffect(() => {
+    if (!web3Context) {
+      navigate('/');
+      openSnackbar('Web3 provider not initialized', 'error');
+    }
+  }, [web3Context]);
+
+  useEffect(() => {
     setFlightsToShow(paginateFlights(allFlights));
   }, [page, count]);
 
   useEffect(() => {
     if (flightSearchParams) {
-      const randomFlights = FlightUtils.generateRandomFlightData(
-        flightSearchParams,
-        numFlightsPerPage
-      );
+      getFlighs()
+        .then((flights: IContractFlight[]) => {
+          const filteredFlights = FlightUtils.convertContractFlights(
+            FlightUtils.filterContractFlights(flights, flightSearchParams)
+          );
 
-      setAllFlights(randomFlights);
+          setAllFlights(filteredFlights);
 
-      setFlightsToShow(paginateFlights(randomFlights));
+          setFlightsToShow(paginateFlights(filteredFlights));
 
-      setCount(numFlightsPerPage);
+          setCount(filteredFlights.length);
+        })
+        .catch((err) => {
+          console.log(err);
+          openSnackbar('Unable to fetch flight data', 'error');
+
+          navigate('/');
+        });
     }
   }, [flightSearchParams]);
 
@@ -67,6 +107,7 @@ const Flights: FC<IFlightsProps> = () => {
           />
         );
       })}
+      {count < 1 && <NoData text={'No flights found'} />}
       <Box
         display={'flex'}
         alignItems={'center'}

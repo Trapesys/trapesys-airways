@@ -16,7 +16,7 @@ import clsx from 'clsx';
 import { FC, useEffect, useState } from 'react';
 import FlightUtils, { IFlightInfo } from '../../../shared/flightUtils';
 import theme from '../../../theme/theme';
-import NoBookings from '../../atoms/NoBookings/NoBookings';
+import NoData from '../../atoms/NoData/NoData';
 import Pagination from '../../atoms/Pagination/Pagination';
 import usePagination from '../../atoms/Pagination/pagination.hook';
 import PlaceInfo from '../../atoms/PlaceInfo/PlaceInfo';
@@ -125,7 +125,7 @@ const BookingsModal: FC<IBookingsModalProps> = (props) => {
           <Box display={'flex'} mt={4} width={'100%'} flexDirection={'column'}>
             {bookingsToShow.length < 1 ? (
               <Box my={8}>
-                <NoBookings />
+                <NoData text={'No bookings found'} />
               </Box>
             ) : (
               <Box>
