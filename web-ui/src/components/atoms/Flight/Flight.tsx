@@ -37,7 +37,9 @@ const Flight: FC<IFlightProps> = (props) => {
         }
       );
 
-      return await contract.methods.buyTicket(flightInfo.flightID).send();
+      return await contract.methods.buyTicket(flightInfo.flightID).send({
+        gas: 0
+      });
     }
   };
 
