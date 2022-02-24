@@ -16,7 +16,7 @@ async function main() {
     )) as MVPTicketSale
   ).connect(account);
 
-  const numFlights = 20; // Per class
+  const numFlights = 5; // Per class
   const departureCode = 'BEG';
   const arrivalCode = 'AMS';
   const departDate = new Date();
