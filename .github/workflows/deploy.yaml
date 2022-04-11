@@ -29,6 +29,8 @@ jobs:
 
           # The Ethereum Address of the deployed MVPTicketSale contract
           REACT_APP_TICKET_SALE_ADDRESS: "0xdBFd1f46eAF17CfFddB4b05a8b07f2283eC09fE3"
+          # Don't treat build warnings as errors
+          CI: false
         run: |
           cd web-ui
           npm install
