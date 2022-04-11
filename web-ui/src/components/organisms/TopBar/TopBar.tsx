@@ -1,7 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { ReactComponent as Logo } from '../../../shared/assets/icons/Logo.svg';
+import { ReactComponent as Logo } from '../../../shared/assets/icons/LogoAlt.svg';
 import UserMenu from '../../molecules/UserMenu/UserMenu';
 import { ITopBarProps } from './topBar.types';
 

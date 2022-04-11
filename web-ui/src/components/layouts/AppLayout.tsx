@@ -1,7 +1,7 @@
 import { Box, Container, makeStyles, Typography } from '@material-ui/core';
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
-import backgroundImage from '../../shared/assets/images/homepageBanner.jpg';
+import backgroundImage from '../../shared/assets/images/homepageBannerAlt.jpg';
 import sharedValues from '../../shared/sharedValues';
 import Footer from '../atoms/Footer/Footer';
 import FlightSearch from '../molecules/FlightSearch/FlightSearch';

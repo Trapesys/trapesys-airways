@@ -133,7 +133,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
           params: [
             {
               chainId: Config.POLYGON_EDGE_CHAIN_ID,
-              chainName: 'MVP Airways',
+              chainName: 'Trapesys Airways',
               rpcUrls: [Config.POLYGON_EDGE_API],
               nativeCurrency: {
                 name: 'Ethereum',
