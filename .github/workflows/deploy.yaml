@@ -22,13 +22,13 @@ jobs:
           REACT_APP_POLYGON_EDGE_API: https://rpc.poa.psdk.io:8545
 
           # The Chain ID of the blockchain cluster (in hex format, with 0x..)
-          REACT_APP_POLYGON_EDGE_CHAIN_ID: 0x64
+          REACT_APP_POLYGON_EDGE_CHAIN_ID: "0x64"
 
           # The Ethereum Address of the deployed MVPT ERC-20 contract
-          REACT_APP_MVPT_ADDRESS: 0x3e5dB28b22Fa5355607b4F2EeB3c738D3CB9FDe9
+          REACT_APP_MVPT_ADDRESS: "0x3e5dB28b22Fa5355607b4F2EeB3c738D3CB9FDe9"
 
           # The Ethereum Address of the deployed MVPTicketSale contract
-          REACT_APP_TICKET_SALE_ADDRESS: 0xdBFd1f46eAF17CfFddB4b05a8b07f2283eC09fE3
+          REACT_APP_TICKET_SALE_ADDRESS: "0xdBFd1f46eAF17CfFddB4b05a8b07f2283eC09fE3"
         run: |
           cd web-ui
           npm install
