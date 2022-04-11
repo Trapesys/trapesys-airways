@@ -1,0 +1,43 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a617e044.chunk.css",
+    "main.js": "/static/js/main.a0df47da.chunk.js",
+    "main.js.map": "/static/js/main.a0df47da.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.a42e080d.js",
+    "runtime-main.js.map": "/static/js/runtime-main.a42e080d.js.map",
+    "static/js/2.afaa8133.chunk.js": "/static/js/2.afaa8133.chunk.js",
+    "static/js/2.afaa8133.chunk.js.map": "/static/js/2.afaa8133.chunk.js.map",
+    "static/js/3.a488cf67.chunk.js": "/static/js/3.a488cf67.chunk.js",
+    "static/js/3.a488cf67.chunk.js.map": "/static/js/3.a488cf67.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.a617e044.chunk.css.map": "/static/css/main.a617e044.chunk.css.map",
+    "static/js/2.afaa8133.chunk.js.LICENSE.txt": "/static/js/2.afaa8133.chunk.js.LICENSE.txt",
+    "static/media/Belgrade.c4ff500d.jpg": "/static/media/Belgrade.c4ff500d.jpg",
+    "static/media/CrewPhoto.00c99fa3.png": "/static/media/CrewPhoto.00c99fa3.png",
+    "static/media/LogoAlt.5a3feef3.svg": "/static/media/LogoAlt.5a3feef3.svg",
+    "static/media/MVP-Workshop-black-logovertical.9d0ec21d.png": "/static/media/MVP-Workshop-black-logovertical.9d0ec21d.png",
+    "static/media/NoviSad.7bfdfa31.jpg": "/static/media/NoviSad.7bfdfa31.jpg",
+    "static/media/Paris.ff451dd8.jpg": "/static/media/Paris.ff451dd8.jpg",
+    "static/media/Sendai.c0edc73c.jpg": "/static/media/Sendai.c0edc73c.jpg",
+    "static/media/Valencia.135c06b9.jpg": "/static/media/Valencia.135c06b9.jpg",
+    "static/media/airplane_ticket_black_24dp.7858950b.svg": "/static/media/airplane_ticket_black_24dp.7858950b.svg",
+    "static/media/calendar_month_black_24dp.8424a8a5.svg": "/static/media/calendar_month_black_24dp.8424a8a5.svg",
+    "static/media/cryptocurrency.26314114.png": "/static/media/cryptocurrency.26314114.png",
+    "static/media/earth.cc47e05a.png": "/static/media/earth.cc47e05a.png",
+    "static/media/flightPath.6b29651a.svg": "/static/media/flightPath.6b29651a.svg",
+    "static/media/homepageBannerAlt.451aea12.jpg": "/static/media/homepageBannerAlt.451aea12.jpg",
+    "static/media/linkedin.b851467e.svg": "/static/media/linkedin.b851467e.svg",
+    "static/media/lockup_horizontal_negative_2_no_bg.81d2698e.svg": "/static/media/lockup_horizontal_negative_2_no_bg.81d2698e.svg",
+    "static/media/logout_black_24dp.05bdeddb.svg": "/static/media/logout_black_24dp.05bdeddb.svg",
+    "static/media/seat.b194bd9e.png": "/static/media/seat.b194bd9e.png",
+    "static/media/stewardess.1a6e10cf.png": "/static/media/stewardess.1a6e10cf.png",
+    "static/media/twitter.83db5438.svg": "/static/media/twitter.83db5438.svg",
+    "static/media/undraw_no_data_re_kwbl.dd5765f1.svg": "/static/media/undraw_no_data_re_kwbl.dd5765f1.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a42e080d.js",
+    "static/js/2.afaa8133.chunk.js",
+    "static/css/main.a617e044.chunk.css",
+    "static/js/main.a0df47da.chunk.js"
+  ]
+}
