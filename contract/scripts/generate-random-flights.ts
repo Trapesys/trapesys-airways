@@ -1,5 +1,5 @@
 import {ethers} from 'hardhat';
-import FlightGenerator, {EContractFlightClass} from '../helper/flightGenerator';
+import FlightGenerator, {EContractFlightClass, IContractFlight} from '../helper/flightGenerator';
 import {MVPTicketSale} from '../types';
 
 const TICKET_SALE_CONTRACT = process.env.TICKET_SALE_CONTRACT ?? '';
@@ -21,6 +21,40 @@ async function main() {
   const arrivalCode = 'AMS';
   const departDate = new Date();
 
+  async function createNewFlight(flight: IContractFlight, nonce: number) {
+    const tx = await ticketSaleContract.addFlight(
+      flight.flightNumber,
+      flight.flightClass,
+      flight.availableSeats,
+      flight.departureCode,
+      flight.departureTime,
+      flight.arrivalCode,
+      flight.arrivalTime,
+      flight.price,
+      {nonce: nonce}
+    );
+
+    const receipt = await tx.wait();
+
+    for (const log of receipt.logs) {
+      const parsed = ticketSaleContract.interface.parseLog(log);
+      if (parsed.name === 'AddedFlight') {
+        console.log(`Added new flight {
+        flightNumber: ${flight.flightNumber},
+        flightClass: ${flight.flightClass},
+        numSeats: ${flight.availableSeats},
+        departureCode: ${flight.departureCode},
+        departureTime: ${flight.departureTime},
+        arrivalCode: ${flight.arrivalCode},
+        arrivalTime: ${flight.arrivalTime},
+        price: ${flight.price},
+      }`);
+
+        return parsed.args.flightId;
+      }
+    }
+  }
+
   const economyFlights = FlightGenerator.generateRandomFlightData({
     departureCode, arrivalCode, departDate, tripClass: EContractFlightClass.ECONOMY
   }, numFlights);
@@ -31,43 +65,13 @@ async function main() {
 
   const combinedFlights = economyFlights.concat(businessFlights);
 
-  for (let i = 0; i < combinedFlights.length; i++) {
-    const combinedFlight = combinedFlights[i];
+  const initialNonce = await ethers.provider.getTransactionCount(account.address);
 
-    console.log(`Add new flight {
-        flightNumber: ${combinedFlight.flightNumber},
-        flightClass: ${combinedFlight.flightClass},
-        numSeats: ${combinedFlight.availableSeats},
-        departureCode: ${combinedFlight.departureCode},
-        departureTime: ${combinedFlight.departureTime},
-        arrivalCode: ${combinedFlight.arrivalCode},
-        arrivalTime: ${combinedFlight.arrivalTime},
-        price: ${combinedFlight.price},
-      }`);
-
-    const tx = await ticketSaleContract.addFlight(
-      combinedFlight.flightNumber,
-      combinedFlight.flightClass,
-      combinedFlight.availableSeats,
-      combinedFlight.departureCode,
-      combinedFlight.departureTime,
-      combinedFlight.arrivalCode,
-      combinedFlight.arrivalTime,
-      combinedFlight.price
-    );
-
-    console.log('tx hash', tx.hash);
-
-    const receipt = await tx.wait();
-    console.log('receipt', receipt);
-
-    for (const log of receipt.logs) {
-      const parsed = ticketSaleContract.interface.parseLog(log);
-      if (parsed.name === 'AddedFlight') {
-        console.log(parsed.args.flightId);
-      }
-    }
-  }
+  await Promise.all(
+    combinedFlights.map(
+      (f, i) => createNewFlight(f, initialNonce + i)
+    )
+  );
 }
 
 main()
