@@ -33,7 +33,7 @@ jobs:
           CI: false
         run: |
           cd web-ui
-          npm install
+          yarn install
           yarn build
       # Deploy to local branch
       - name: Deploy build to local branch
