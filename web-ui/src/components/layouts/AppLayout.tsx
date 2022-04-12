@@ -6,6 +6,7 @@ import sharedValues from '../../shared/sharedValues';
 import Footer from '../atoms/Footer/Footer';
 import FlightSearch from '../molecules/FlightSearch/FlightSearch';
 import TopBar from '../organisms/TopBar/TopBar';
+import { ReactComponent as PolygonEdge } from './../../shared/assets/icons/polygonEdge.svg';
 import { IAppLayoutProps } from './appLayout.types';
 
 const AppLayout: FC<IAppLayoutProps> = (props) => {
@@ -27,6 +28,12 @@ const AppLayout: FC<IAppLayoutProps> = (props) => {
               <Typography className={classes.bannerText}>
                 Let's fly to the Moon.
               </Typography>
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography className={classes.bannerSubText}>
+                  Powered by
+                </Typography>
+                <PolygonEdge className={classes.logo} />
+              </Box>
             </Box>
             <FlightSearch />
           </Box>
@@ -71,6 +78,15 @@ const useStyles = makeStyles((theme) => {
       fontWeight: 600,
       fontSize: theme.typography.pxToRem(42),
       color: 'white'
+    },
+    bannerSubText: {
+      fontWeight: 600,
+      fontSize: theme.typography.pxToRem(24),
+      color: 'white'
+    },
+    logo: {
+      width: '300px',
+      height: 'auto'
     }
   };
 });
