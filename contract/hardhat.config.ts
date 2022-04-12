@@ -13,6 +13,7 @@ const config: HardhatUserConfig = {
   networks: {
     edge: {
       url: process.env.JSONRPC_URL ?? "http://localhost:10002",
+      timeout: 10000000,
       accounts: [...privateKeys],
     },
   },

@@ -18,6 +18,8 @@
     "balance-of-token": "hardhat run scripts/balance-of-token.ts --network edge",
     "withdraw-tokens": "hardhat run scripts/withdraw-tokens.ts --network edge",
     "generate-random-flights": "hardhat run scripts/generate-random-flights.ts --network edge",
+    "generate-stat-flights": "hardhat run scripts/generate-stat-flights.ts --network edge",
+    "buy-remaining-flights": "hardhat run scripts/buy-remaining-flights.ts --network edge",
     "test": "hardhat test",
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile"

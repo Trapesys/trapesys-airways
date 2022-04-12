@@ -12,10 +12,12 @@ import {
   Typography
 } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles';
+import EqualizerOutlinedIcon from '@material-ui/icons/EqualizerOutlined';
 import KeyboardArrowDownRoundedIcon from '@material-ui/icons/KeyboardArrowDownRounded';
 import KeyboardArrowUpRoundedIcon from '@material-ui/icons/KeyboardArrowUpRounded';
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import { FC, Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import Config from '../../../config';
@@ -23,6 +25,7 @@ import Web3Context from '../../../context/Web3Context';
 import MVPToken from '../../../contract/IMVPToken.json';
 import { ReactComponent as MyBookings } from '../../../shared/assets/icons/airplane_ticket_black_24dp.svg';
 import { ReactComponent as Logout } from '../../../shared/assets/icons/logout_black_24dp.svg';
+import FlightUtils from '../../../shared/flightUtils';
 import theme from '../../../theme/theme';
 import ActionButton from '../../atoms/ActionButton/ActionButton';
 import BookingsModal from '../BookingsModal/BookingsModal';
@@ -171,6 +174,8 @@ const UserMenu: FC<IUserMenuProps> = () => {
     return 0;
   };
 
+  const navigate = useNavigate();
+
   const renderUserInfo = (accountAddress: string) => {
     return (
       <Fragment>
@@ -239,7 +244,7 @@ const UserMenu: FC<IUserMenuProps> = () => {
                           MVPT Balance
                         </Typography>
                         <Typography className={classes.balance}>
-                          {`${tokenBalance} MVPT`}
+                          {`${FlightUtils.formatNumber(tokenBalance)} MVPT`}
                         </Typography>
                       </Box>
                     </MenuItem>
@@ -254,6 +259,18 @@ const UserMenu: FC<IUserMenuProps> = () => {
                       <Box display={'flex'}>
                         <MyBookings />
                         <Box ml={1}>My Bookings</Box>
+                      </Box>
+                    </MenuItem>
+                    <MenuItem
+                      className={classes.userMenuItem}
+                      onClick={() => {
+                        setOpen(false);
+                        navigate('stats');
+                      }}
+                    >
+                      <Box display={'flex'}>
+                        <EqualizerOutlinedIcon />
+                        <Box ml={1}>Flight Stats</Box>
                       </Box>
                     </MenuItem>
                     <MenuItem

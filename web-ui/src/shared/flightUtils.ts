@@ -56,6 +56,21 @@ class FlightUtils {
     return Math.round(Math.random() * (max - min)) + min;
   }
 
+  static SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
+
+  public static formatNumber(num: number) {
+    const tier = (Math.log10(Math.abs(num)) / 3) | 0;
+
+    if (tier == 0) return num;
+
+    const suffix = FlightUtils.SI_SYMBOL[tier];
+    const scale = Math.pow(10, tier * 3);
+
+    const scaled = num / scale;
+
+    return scaled.toFixed(1) + suffix;
+  }
+
   public static getCountryCode(country: string): string {
     for (let i = 0; i < countryCodes.length; i++) {
       if (countryCodes[i].name === country) {
